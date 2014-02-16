@@ -12,8 +12,16 @@
 	// controller action is handling ajax validation correctly.
 	// There is a call to performAjaxValidation() commented in generated controller code.
 	// See class documentation of CActiveForm for details on this.
-	'enableAjaxValidation'=>false,
+	'enableAjaxValidation'=>FALSE,
 )); ?>
+    
+<!--<p class="note">Fields with <span class="required">*</span> are required.</p>-->
+<?php  
+if(($form->errorSummary($model))){
+echo '<div class="alert alert-error">'.$form->errorSummary($model).'</div>';	
+}
+?>
+    
     <style>
         form label {
 /*            float: none;
@@ -102,13 +110,13 @@ text-align: left;*/
             
           </div>
             
-             <div class="control-group">
+<!--             <div class="control-group">
             <label class="control-label" for="password">Alert me when departure between</label>
             <div class="controls">
              <?php echo $form->textField($model,'train_dept_min'); ?><?php echo $form->error($model,'train_dept_min'); ?>  <?php echo $form->textField($model,'train_dept_max'); ?><?php echo $form->error($model,'train_dept_max'); ?>
             </div>
+          </div>-->
           </div>
-         </div>
         
         <div class="span2">
             <div class="btn-group ">
@@ -141,20 +149,20 @@ text-align: left;*/
         <div class="span8">
             <h3>Flight Alert</h3>
             <div class="control-group">
-            <label class="control-label" for="password">Alert me when availability between</label>
+            <label class="control-label" >Alert me when flight price between</label>
             <div class="controls">
-             <?php echo $form->textField($model,'flight_avail_min'); ?><?php echo $form->error($model,'flight_avail_min'); ?>  <?php echo $form->textField($model,'flight_avail_max'); ?><?php echo $form->error($model,'flight_avail_max'); ?>
+             <?php echo $form->textField($model,'flight_price_min'); ?><?php echo $form->error($model,'flight_price_min'); ?>  <?php echo $form->textField($model,'flight_price_max'); ?><?php echo $form->error($model,'flight_price_max'); ?>
             </div>
             
           </div>
             
-             <div class="control-group">
+<!--             <div class="control-group">
             <label class="control-label" for="password">Alert me when departure between</label>
             <div class="controls">
              <?php echo $form->textField($model,'flight_dept_min'); ?><?php echo $form->error($model,'flight_dept_min'); ?>  <?php echo $form->textField($model,'flight_dept_max'); ?><?php echo $form->error($model,'flight_dept_max'); ?>
             </div>
+          </div>-->
           </div>
-        </div>
         
         <div class="span2">
             <div class="btn-group">

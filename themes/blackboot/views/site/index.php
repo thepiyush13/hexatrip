@@ -93,19 +93,23 @@ $form=$this->beginWidget('CActiveForm', array(
 	<!--<p class="note">Fields with <span class="required">*</span> are required.</p>-->
 
 	<p class="note"><?php foreach(Yii::app()->user->getFlashes() as $key => $message) {
-        echo '<div class="flash-' . $key . '">' . $message . "</div>\n";
+        echo '<div class="alert alert-' . $key . '">' . $message . "</div>\n";
     }  ?></p>
 
 	
 	<div class="row-fluid">
 		<?php echo $form->labelEx($model,'location_from'); ?>
-		<?php echo $form->dropDownList($model,'location_from', $model->getLocationOptions()); ?>
+		<?php echo $form->dropDownList($model,'location_from', $model->getLocationOptions()
+                        ,array('options' => array('1'=>array('selected'=>true)))
+                        ); ?>
 		<?php echo $form->error($model,'location_from'); ?>
 	</div>
 
 	<div class="row-fluid">
 		<?php echo $form->labelEx($model,'location_to'); ?>
-		<?php echo $form->dropDownList($model,'location_to', $model->getLocationOptions()); ?>
+		<?php echo $form->dropDownList($model,'location_to', $model->getLocationOptions()
+                        ,array('options' => array('3'=>array('selected'=>true)))
+                        ); ?>
 		<?php echo $form->error($model,'location_to'); ?>
 	</div>
 
@@ -118,7 +122,8 @@ $form=$this->beginWidget('CActiveForm', array(
                         'dateFormat'=>'dd-mm-yy',
                          ),
                  'htmlOptions'=>array(
-                          'placeholder'=>'Select a date',
+                          'placeholder'=>'Select starting date',
+                     'required'=>TRUE
                         )
 	)); 
             
@@ -130,11 +135,13 @@ $form=$this->beginWidget('CActiveForm', array(
             <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		'name'=>'Alert[date_to]',
                        'htmlOptions'=>array(
-                          'placeholder'=>'Select a date',
+                          'placeholder'=>'Select ending date',
+                           'required'=>TRUE
                         ),
                         'options'=>array(
                         'showAnim'=>'fold',
                         'dateFormat'=>'dd-mm-yy',
+                            
                          ),
 	)); 
             

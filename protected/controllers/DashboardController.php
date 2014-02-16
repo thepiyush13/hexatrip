@@ -30,7 +30,7 @@ class DashboardController extends Controller {
                     
                     
                     ),
-                'users' => array('admin'),
+                'users' => array('hexatrip'),
             ),
             array('deny', // deny all users
                 'users' => array('*'),
@@ -61,12 +61,14 @@ class DashboardController extends Controller {
             foreach ($locations as $location) {
                 if ($location['id'] == $route['location_from']) {
                     $from = array('from_id'=>$location['id'],
-                        'from_name'=>$location['name']
+                        'from_name'=>$location['name'],
+                             'from_desc'=>$location['desc']
                             );
                 }
                 if ($location['id'] == $route['location_to']) {
                     $to = array('to_id'=>$location['id'],
-                        'to_name'=>$location['name']
+                        'to_name'=>$location['name'],
+                         'to_desc'=>$location['desc']
                             );
                 }
             }
@@ -133,11 +135,6 @@ class DashboardController extends Controller {
             $alert_email =  $modelCommon->alert_user_property($changed_alert, 'email')  ;        
             //create notification string for this alerts
             $alert_msg = $this->alert_msg($alert_data,$changed_alert);
-            //add to email queue
-            $mail_data['email_to'] = $alert_email;    
-            $mail_data['view_file'] = 'alert_mail';
-            $mail_data['subject'] = 'Alert Update';
-            
             //now generating html array to be passed to view file
             $temp = array();
             $temp['alert_data'] = $alert_data;
@@ -146,13 +143,19 @@ class DashboardController extends Controller {
             //pass to send mail function
             $mail_data['model'] =$this->get_mail_html($temp);
 //            echo $this->render('/mail/alert_mail',array('model'=>$mail_data['model'] ));
-//            die('end');
+            
+            //add to email queue
+            $mail_data['email_to'] = $alert_email;    
+            $mail_data['view_file'] = 'alert_mail';
+            $mail_data['subject'] = "Hi ".$temp['username'].", Alert Update for your route ";            
+            
             if($modelCommon->send_mail($mail_data)){
                 //mail sends successful - now delete this record 
                 AlertStatus::model()->deleteAll('alert_id=:alertID',array(':alertID'=>$changed_alert));
             }
     
         }
+        //die(print_r($changed_alerts));
         
       
         $this->render('index', array(
@@ -180,8 +183,25 @@ class DashboardController extends Controller {
             //alert status change details
             $from_id  = $alert_data->location_from;
             $to_id  = $alert_data->location_to;
-            $alert_train_data  = TempTrainStatus::model()->findAllByAttributes(array('location_from'=>$from_id,'location_to'=>$to_id) );           
+            $date_from = Yii::app()->dateFormatter->format(" yyyy-MM-dd", $alert_data->date_from) ;
+            $date_to = Yii::app()->dateFormatter->format(" yyyy-MM-dd", $alert_data->date_to) ;  
+            
+            //finding train information
+            $alert_train_data = array();
+            $criteria = new CDbCriteria;
+            $criteria->condition='location_from =  :location_from AND location_to = :location_to';
+            $criteria->addCondition( 'date BETWEEN "'.$date_from.'" AND "'.$date_to.'"' );
+            $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id);
+            $alert_train_data['matched']  = TempTrainStatus::model()->findAll($criteria); 
+                //finding future ticket macthing 
+             $criteria = new CDbCriteria;
+            $criteria->condition='location_from =  :location_from AND location_to = :location_to AND date > :date_to';
+            
+            $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id,':date_to'=>$date_to);
+            $alert_train_data['future']  = TempTrainStatus::model()->findAll($criteria);
             $msg['train']= $this->create_train_table($alert_train_data);
+            
+            //find other information
             $msg['flight']= $this->create_flight_table($alert_data);
             $msg['bus']= $this->create_bus_table($alert_data);
             
@@ -205,24 +225,51 @@ class DashboardController extends Controller {
     }
     
     
-    protected function create_train_table($data){
-       
-        $result = '<h3>Total '.count($data).' Train(s) found for your route</h3>';
+    protected function create_train_table($data){       
+
+        $data_matched = isset($data['matched']) ? $data['matched'] : FALSE;
+        $data_future = isset($data['future']) ? $data['future'] : FALSE;
+        $result = '';
+        //if data is macthed - show main table 
+        if($data_matched){
+            $result.= '<h3>Total '.count($data_matched).' Train(s) found for your route</h3>';
         $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Train Number</th><th>Train Name</th>
             <th>Date</th><th>Class</th><th>Available Seats</th></tr>";
-foreach($data as $k=>$vv){
+foreach($data_matched as $k=>$vv){
      
     $result.="<tr>";
      $result.="<td>".($k+1)."</td>";
         $result.="<td>".$vv['train_id']."</td>";
         $result.="<td>".$vv['train_name']."</td>";
-        $result.="<td>".$vv['date']."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date']) ."</td>";
         $result.="<td>".$vv['type']."</td>";
         $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
         
     $result.="<tr>";
 }
 $result.="</table>";
+        }
+        //show future table also
+        if($data_future){
+            $result.= '<h3>Total '.count($data_future).' Future Train(s) If above trains are not suitable</h3>';
+        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Train Number</th><th>Train Name</th>
+            <th>Date</th><th>Class</th><th>Available Seats</th></tr>";
+foreach($data_future as $k=>$vv){
+     
+    $result.="<tr>";
+     $result.="<td>".($k+1)."</td>";
+        $result.="<td>".$vv['train_id']."</td>";
+        $result.="<td>".$vv['train_name']."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date'])."</td>";
+        $result.="<td>".$vv['type']."</td>";
+        $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
+        
+    $result.="<tr>";
+}
+$result.="</table>";
+        }
+        
+        
 return $result;
     }
     

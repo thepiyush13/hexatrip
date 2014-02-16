@@ -11,13 +11,14 @@ $this->menu=array(
 );
 ?>
 <h1>Unique Routes</h1>
-<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Download Routes as csv', 'url'=>array('/dashboard/downloadroutes')),
-//				array('label'=>'Upload Route Data', 'url'=>array('/dashboard/upload')),
-				
-			),
-		)); 
+<?php
+//$this->widget('zii.widgets.CMenu',array(
+//			'items'=>array(
+//				array('label'=>'Download Routes as csv', 'url'=>array('/dashboard/downloadroutes')),
+////				array('label'=>'Upload Route Data', 'url'=>array('/dashboard/upload')),
+//				
+//			),
+//		)); 
 
 //main table for routes display 
 
@@ -78,6 +79,10 @@ $dataProvider=new CArrayDataProvider($arr,array(
                 'value'=>'$data["from_name"]',
                 ),
                 array(
+                'name'=>'From Desc',
+                'value'=>'$data["from_desc"]',
+                ),
+                array(
                 'name'=>'To ID',
                 'value'=>'$data["to_id"]',
                 ),
@@ -85,6 +90,10 @@ $dataProvider=new CArrayDataProvider($arr,array(
                 'name'=>'To Name',
                 'value'=>'$data["to_name"]',
                 ),
+            array(
+                'name'=>'To Desc',
+                'value'=>'$data["to_desc"]',
+        ),
         ),
 )); ?>
     </div>

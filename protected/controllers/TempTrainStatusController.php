@@ -5,7 +5,7 @@ class TempTrainStatusController extends Controller {
      * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
      * using two-column layout. See 'protected/views/layouts/column2.php'.
      */
-//	public $layout='//layouts/column2';
+	public $layout='//layouts/column2';
 
     /**
      * @return array action filters
@@ -67,13 +67,15 @@ class TempTrainStatusController extends Controller {
          }
         
           //getting all the active alerts with train status ON , where something has changed in train options
-            $sql = "  select x.id as alert_id,y.* from alert as x join
-                                temp_train_status as y 
-                                on x.location_from = y.location_from and x.location_to = y.location_to     
-                                 where x.status=1 and
-                                 x.train = 1  
-                                 and y.available < x.train_avail_min  
-                                 and y.date < x.date_to";
+            $sql = " SELECT x.id as alert_id  FROM `alert` as x  JOIN `temp_train_status` as y ON (1)
+where x.location_from = y.location_from
+and x.location_to  = y.location_to
+and x.status=1
+and x.train=1
+and y.available between x.train_avail_min and x.train_avail_max
+and y.date between x.date_from and x.date_to
+and y.date >= NOW()
+group by x.id";
             $output = Yii::app()->db->createCommand($sql)->queryAll();
             $alert_ids = array();
             foreach ($output as $key => $value) {

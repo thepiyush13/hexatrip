@@ -29,7 +29,7 @@ class LocationController extends Controller
 		return array(
 			array('allow', // allow all users to perform 'index' and 'view' actions
                 'actions' => array('index', 'view', 'update', 'delete','create','admin'),
-                'users' => array('admin'),
+                'users' => array('hexatrip'),
             ),
 			array('deny',  // deny all users
 				'users'=>array('*'),

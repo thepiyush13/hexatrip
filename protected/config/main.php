@@ -59,8 +59,8 @@ return array(
                     'htmlOptions'=>array('class'=>'table table-striped table-bordered table-hover table-condensed'),
                 ),
                 'CGridView' => array(
-                    
-                ),
+                'itemsCssClass' => 'table table-bordered table-hover'
+            ),
             ),
                 ),
             //for working with YIIMAIL extension

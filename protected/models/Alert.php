@@ -64,7 +64,11 @@ class Alert extends CActiveRecord
 			array('location_from, location_to', 'required'),
 			array('location_from, location_to, status, bus, bus_price_min, bus_price_max, bus_avail_min, bus_avail_max, bus_dept_min, bus_dept_max, bus_arrive_min, bus_arrive_max, train, train_price_min, train_price_max, train_avail_min, train_avail_max, train_dept_min, train_dept_max, train_arrive_min, train_arrive_max, flight, flight_price_min, flight_price_max, flight_avail_min, flight_avail_max, flight_dept_min, flight_dept_max, flight_arrive_min, flight_arrive_max', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
-			array('desc, date_from, date_to, created,updated', 'safe'),
+			array('desc,  created,updated', 'safe'),
+                                            array(' date_from, date_to', 'required'),
+                    array('date_from', 'type', 'type' => 'date', 'message' => '{attribute}: is not a date!', 'dateFormat' => 'dd-MM-yyyy'),
+                     array('date_to', 'type', 'type' => 'date', 'message' => '{attribute}: is not a date!', 'dateFormat' => 'dd-MM-yyyy'),
+                    
                     
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -263,8 +267,18 @@ return array_keys($locations);
         // convert to storage format
           
          $this->date_from = DateTime::createFromFormat('d-m-Y', $this->date_from)->format('Y-m-d');
-       
         $this->date_to = DateTime::createFromFormat('d-m-Y', $this->date_to)->format('Y-m-d');
+
+        //setting up default values for any new alert         
+        //if any value is set by user - respect that         
+        //if no value is set - set default values
+        if(!($this->train_avail_min)){
+            $this->train_avail_min = 1;
+        }
+        if(!($this->train_avail_max)){
+            $this->train_avail_max = 1000;
+        }
+        
 
         return parent::beforeSave();
     }

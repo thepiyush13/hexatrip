@@ -48,7 +48,20 @@ class SiteController extends Controller {
 		));
             return true;
         }
+        //check trip date to  validity 
+          if (!isset($_POST['Alert']['date_to']) || !$_POST['Alert']['date_to'] ||  ($_POST['Alert']['date_to']=='00-00-0000') 
+                  || !isset($_POST['Alert']['date_from']) || !$_POST['Alert']['date_from'] ||  ($_POST['Alert']['date_from']=='00-00-0000') 
+                  ) {          
+           Yii::app()->user->setFlash('error', "Enter valid date for the trip!");   
+            
+           $this->render('index',array(
+			'model'=>$model,
+		));
+            return true;
+        }
         
+        
+ 
         
         
         //check if user exists in the system 

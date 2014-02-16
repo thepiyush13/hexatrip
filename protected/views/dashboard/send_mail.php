@@ -1,3 +1,15 @@
+<?php
+/* @var $this DashboardController */
+
+$this->breadcrumbs=array(
+	'Dashboard',
+);
+
+$this->menu=array(
+	array('label'=>'Load Train Data', 'url'=>array('//tempTrainStatus/loadData ')),
+	array('label'=>'Send Email', 'url'=>array('sendMail')),
+);
+?>
 <div class="row-fluid">
     <div>
         <br/>

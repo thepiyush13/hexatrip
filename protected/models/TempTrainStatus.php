@@ -163,4 +163,14 @@ function behaviors()
         )
         );
 }
+
+protected function beforeSave()
+    {
+        // convert to storage format
+          
+         $this->date = DateTime::createFromFormat('d-m-Y', $this->date)->format('Y-m-d');      
+        
+
+        return parent::beforeSave();
+}
 }
