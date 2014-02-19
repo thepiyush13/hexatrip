@@ -62,3 +62,35 @@
 		<!-- End Footer Bottom-->
 		
 	</footer>
+
+<!--USER VOICE CONTACT FORM-->
+<!-- UserVoice JavaScript SDK (only needed once on a page) -->
+<script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/zHIFfRr3oGCQZVbReiqOkg.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
+
+<!-- A tab to launch the Classic Widget -->
+<script>
+UserVoice = window.UserVoice || [];
+UserVoice.push(['showTab', 'classic_widget', {
+  mode: 'full',
+  primary_color: '#cc6d00',
+  link_color: '#007dbf',
+  default_mode: 'support',
+  forum_id: 241894,
+  tab_label: 'Feedback & Contact',
+  tab_color: '#000000',
+  tab_position: 'middle-right',
+  tab_inverted: false
+}]);
+</script>
+
+<!--GOOGLE ANALYTICS-->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-47261902-1', 'hexatrip.com');
+  ga('send', 'pageview');
+
+</script>

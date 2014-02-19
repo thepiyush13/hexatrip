@@ -48,11 +48,12 @@ class DashboardController extends Controller {
     public function actionIndex() {
         $sql = "select * from alert
   where alert.status= 1  and 
+  alert.train = 1 and
   location_from<>location_to 
-  and date_from > now()
+  and date_from between NOW() and date_add(NOW(),INTERVAL 2 MONTH) 
   and date_to > now()
-  and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
-  group by location_from,location_to";
+group by location_from,location_to
+";
         $routes = Yii::app()->db->createCommand($sql)->queryAll();
         $sql = "select * from location";
         $locations = Yii::app()->db->createCommand($sql)->queryAll();
@@ -411,72 +412,44 @@ Yii::app()->getRequest()->sendFile($file_name,$columns );
     /**
      * @return Uploads file to application/uploads folder
      */
-    function actionUpload($type) {
+    function actionUpload() {
        
-        //temp - upload data 
-        
-        
-        $this->load_data();
-        return true;
-        
-        switch ($type) {
-    case 'train':
-        $table = 'temp_train_status';
-        break;
-
-    default:
-        break;
-}
         $dir = Yii::getPathOfAlias('application.uploads');
-        $dir = '/tmp';        
-        $seperator = ',';
-        $line_terminator = '\n';
-        $quotor = '\"';
         $uploaded = false;
-        $model = new Upload();
-        
-        if (isset($_POST['Upload'])) {
-            $model->attributes = $_POST['Upload'];
-            $model->file = CUploadedFile::getInstance($model, 'file');
-            if ($model->validate())
-                $uploaded = $model->file->saveAs($dir . '/' . $model->file->getName());
-//file uploaded , now get it to the database 
-            if ($uploaded) {
-                $file_name = $dir . '/' . $model->file->getName();
-                chmod($file_name, 777);
-                $sql = "LOAD  DATA  INFILE '$file_name' 
-                    INTO TABLE $table 
-                    FIELDS
-TERMINATED BY '$seperator' 
-ENCLOSED BY '$quotor' 
-LINES TERMINATED BY '$line_terminator' ; ";
-                $output = Yii::app()->db->createCommand($sql)->query();
-                $uploaded = true;
+        $model=new Upload();
+        if(isset($_POST['Upload']))
+        {
+            $type = $_POST['type'];
+        $model->attributes=$_POST['Upload'];
+        $model->file=CUploadedFile::getInstance($model,'file');
+        if($model->validate()){
+            $uploaded=$model->file->saveAs($dir.'/'.$model->file->getName());
+            $file_name  = $dir.'/'.$model->file->getName();
+            $file_contents = file_get_contents($file_name);
+            //cleanup before xml conversion 
+            $file_contents = str_replace(array('\'', '"'), '', $file_contents); 
+            $xml_input_string = '<?xml version="1.0" encoding="UTF-8" ?><document> ' .$file_contents.'</document>';
+            $xml = simplexml_load_string($xml_input_string);
+             if($type=='TRAIN'){
+            $changed_alerts = $this->load_train_data($xml);
+            $this->set_alert_status();
             }
-            
-            if($type=='train'){
-            $changed_alerts = $this->process_train_data();
-        }
-        if($type=='flight'){
-            $changed_alerts = $this->process_flight_data();
-        }
-        //cleanup for legal reasons
-        // delete uploaded status file , temp file and any other associated file 
-        
-        //show changed alerts for email sending 
-        $sql = "SELECT * from alert_staus where alert_id in($changed_alerts)";
-        //display these to end admin for mail send
+//            if($type=='FLIGHT'){
+//                $changed_alerts = $this->process_flight_data();
+//            }
+//            die(print_r($xml));
+           //now that all the respective tables filled set alert status 
         }
         
-        
-        
-        
-        
+        }
         $this->render('upload', array(
             'model' => $model,
             'uploaded' => $uploaded,
             'dir' => $dir,
         ));
+
+        return true;
+        
     }
 
     /**
@@ -612,24 +585,68 @@ $flight_arrive_max,
      /**
      * @return goes to temp_train_status table joins it with alert table to get alerts where train status have changed
      */
-  protected  function process_train_data(){
+  protected  function load_train_data($xml_routes){
       
-      //getting all the active alerts with train status ON , where something has changed in train options
-      $sql = "  select x.id as id from alert as x join
-   temp_train_status as y 
-   on x.location_from = y.location_from and x.location_to = y.location_to     
-    where x.status=1 and
-    x.train = 1  
-    and y.available < x.train_avail_min  
-    and y.date < x.date_to";
-       $output = Yii::app()->db->createCommand($sql)->queryAll();
-       //update the alert_status for above changed alerts 
-       $changed_alerts = implode(',',$output);
-       $sql ="UPDATE alert_status SET train_avail_alert = 1 WHERE alert_id in($changed_alerts)";
-        $output = Yii::app()->db->createCommand($sql)->query();
-      //now delete the temp table contents and cleanup 
-       $sql ="DELETE TABLE temp_train_status"; 
-       return $changed_alerts;
+     //cleanup previous data 
+                  TempTrainStatus::model()->deleteAll();      
+    //get xml data
+
+      foreach ($xml_routes as $key=> $value) {
+          //get routes
+          $data = array();
+          $route =  (array)$value;
+          $route_id = $route['id'];
+          $temp = explode('-', $route_id);
+          $data['location_from'] =$temp[0] ;
+          $data['location_to'] = $temp[1] ;
+          if(  ($route['train_number']=='#EANF#') || ($route['train_name']=='#EANF#')    ){
+              continue; //train does not have valid data , so jump to next record              
+          }
+          $data['train_id'] =  $route['train_number'];
+          $data['train_name'] =  $route['train_name'];
+          
+          //cleanup train data - split by new line - remove emoty lines - get fields seperated by comma 
+            $train_data_temp = preg_split('/\n|\r/', $route['data'], -1, PREG_SPLIT_NO_EMPTY);
+            array_shift($train_data_temp); //first row is header   
+            //finding train status data 
+            foreach ($train_data_temp as $k => $v) {
+                $v_day  = explode(',',$v);
+                $data['date'] = preg_replace('/\s+/', '', $v_day[1]); //remove whitespace
+                $v_sl_avail = isset($v_day[2])? $v_day[2] :''  ;
+                $v_3a_avail = isset($v_day[3])? $v_day[3] :'';
+                //now check if 3a class and sl have availibility data
+//                die($v_sl_avail);
+                if (strpos($v_sl_avail,'AVAILABLE') !== false) {
+                            $data['available'] = preg_replace("/[^0-9]/","",$v_sl_avail); //getting int from string
+                            $data['type'] = 'SL';
+                            $model = new TempTrainStatus;
+                            $model->attributes =  $data;                            
+                            if(!$model->Save()){
+                                continue;
+  }  
+                }
+                if (strpos($v_3a_avail,'AVAILABLE') !== false) {
+                            $data['available'] = preg_replace("/[^0-9]/","",$v_3a_avail); //getting int from string
+                            $data['type'] = '3AC';
+                            $model = new TempTrainStatus;
+                            $model->attributes =  $data;
+                            $model->Save();
+                }
+  
+            }
+//            die(print_r($train_data_temp));
+          
+      
+      //get trains 
+      //get train data 
+      //cleanup train data 
+     //parse train data 
+      //save to db 
+    
+        } 
+      
+      
+     
   }  
   
    /**
@@ -700,6 +717,46 @@ IGNORE 0 LINES
                     return true;
       
   }  
+  /**
+   * @return :  Sets the alert status table entries based on temp train status table
+   */
+  protected function set_alert_status(){
+       //getting all the active alerts with train status ON , where something has changed in train options
+            $sql = " SELECT x.id as alert_id  FROM `alert` as x  JOIN `temp_train_status` as y ON (1)
+where x.location_from = y.location_from
+and x.location_to  = y.location_to
+and x.status=1
+and x.train=1
+and y.available between x.train_avail_min and x.train_avail_max
+and y.date between x.date_from and x.date_to
+and y.date >= NOW()
+group by x.id";
+            $output = Yii::app()->db->createCommand($sql)->queryAll();
+            $alert_ids = array();
+            foreach ($output as $key => $value) {
+                $alert_ids[] = $value['alert_id'];
+            }
+  
+            //remove duplicate entries
+            $alert_ids = array_unique($alert_ids);
+
+            //now we found the changed alerts - update them to the status table
+            foreach ($alert_ids as $alert_id) {
+
+                $criteria = new CDbCriteria;
+                $criteria->condition = "alert_id = $alert_id";
+
+                if (($modelAlertStatus = AlertStatus::model()->find($criteria)) === null) {
+                    $modelAlertStatus = new AlertStatus;
+}
+                $modelAlertStatus->alert_id = $alert_id;
+                $modelAlertStatus->train_avail_alert = 1;
+                if (!$modelAlertStatus->save()) {
+                    Yii::app()->user->setFlash('error', "Some error occured for alert id: $alert_id");
+                };
+            }
+            Yii::app()->user->setFlash('success', "Success! Data Saved");
+  }
   
 
 }

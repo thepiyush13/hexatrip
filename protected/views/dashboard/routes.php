@@ -54,7 +54,7 @@ $arr =  $result;
 
 $dataProvider=new CArrayDataProvider($arr,array(
 'sort'=>array('attributes'=>array('from_id','from_name','to_id','to_name'),),
-'pagination'=>array('pageSize'=>1)
+'pagination'=>false
 
 ));
 ?>

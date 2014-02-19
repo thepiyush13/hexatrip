@@ -1,7 +1,15 @@
 <?php  $baseUrl = Yii::app()->theme->baseUrl; 
 	  $cs = Yii::app()->getClientScript();
-$cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css'); 
+//$cs->registerCssFile(Yii::app()->theme->baseUrl."/css/main_page.form.css"); 
+//          $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css'); 
+         
 
+?>
+<!--<link rel="stylesheet" type="text/css" href="http://simplesphere.net/demo/leadgen/default/css/style.css" />-->
+<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main_page.form.css" />
+
+<?php
+// $cs->registerCssFile(Yii::app()->theme->baseUrl."/css/home/style.css"); 
 ?>
 <style>
     .banner ul li  {
@@ -27,9 +35,9 @@ $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css'
 			<div class="row-fluid">
 				<!-- Banner Content-->
 				<div class="span8 banner">
-					<h1>Never Worry about ticket availability !</h1>
+					<h1>Going somewhere?&nbsp;Find your perfect ticket !</h1>
 					<ul>
-						<li>Know when your train ticket is available</li>
+						<li>Get available train ticket for your next trip</li>
 						<li>Know when your flight price increases</li>
 						<li>Know when your bus price changes</li>
 						<li>Alerts on your Mobile or Email</li>
@@ -38,7 +46,48 @@ $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css'
 						
 					</ul>
                                            <hr/>
-                                          <div class="left-icon">
+                                           <div class="left-icon center"><div class="row-fluid text-center"><div class="span4 text-center" style="
+    text-align: center;
+">
+  <h2 style="
+    text-align: center;
+">Step1</h2>
+  <h5>Decide When &amp; where you want to go</h5>
+  <h6><i class="fa fa-truck fa-3x base-color center" style="
+    color: #ff8a00;
+"></i><i class="fa fa-road fa-rotate-90 fa-3x base-color center" style="
+    color: #ff8a00;
+"></i><i class="fa fa-plane fa-3x base-color center" style="
+    color: #ff8a00;
+"></i></h6>
+
+</div><div class="span4">
+  <h2 style="
+    text-align: center;
+">Step2</h2>
+  <h5 class="text-center" style="
+    text-align: center;
+">Setup and alert with us.Its easy and free</h5>
+  <p class="text-center" style="
+    text-align: center;
+"><i class="fa fa-bell-o fa-3x base-color center" style="
+    color: #ff8a00;
+"></i></p></div><div class="span4">
+  <h2 style="
+    text-align: center;
+">Step3</h2>
+  <h5 style="
+    text-align: center;
+">Receive availble tickets lists in your mailbox</h5>
+  <p style="
+    text-align: center;
+"><i class="fa fa-envelope fa-3x base-color center" style="
+    color: #ff8a00;
+"></i></p></div></div>
+
+            
+                                          </div>
+<!--                                          <div class="left-icon">
 
             <p>
               <i class="fa fa-truck fa-5x base-color center" style="
@@ -60,7 +109,7 @@ $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css'
 "></i>
 
     </p>
-                                          </div>
+                                          </div>-->
 				</div>
                              
                               
@@ -295,7 +344,7 @@ let us see how you plan your advance booking :</h4>
 							
 							<li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
 								
-								<p>Whenever i booked ticket between Chennai and Hyderabad the waiting list queue moves very fast.I had to check the booking website 7 times a day to make sure i get the ticket.Thanks to hexatrip , i no longer need to do that and get all that alert in email.</p>
+								<p style="line-height: 18px;font-size: 16px;">Whenever i booked ticket between Chennai and Hyderabad the waiting list queue moves very fast.I had to check the booking website 7 times a day to make sure i get the ticket.Thanks to hexatrip , i no longer need to do that and get all that alert in email.</p>
 								<span class="author"><strong>- Shreyas Chauhan</strong></span>
 							</li>
 						</ul>

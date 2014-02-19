@@ -1,0 +1,130 @@
+*,
+*:after,
+*:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+.form-area {
+    position: relative;
+    background: #FFF;
+    color: #7e7975;
+	-webkit-box-shadow: 0 1px 15px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 0 1px 15px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 1px 15px rgba(0, 0, 0, 0.4);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding:0 20px;
+}
+
+.form-area h1 {
+    font-size: 24px;
+	margin-left:-20px;
+	margin-right:-20px;
+	margin-bottom:10px;
+    border-bottom: 1px solid #EBE6E2;
+    text-shadow: 0 2px 0 rgba(255,255,255,0.8);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    background: #fbd568;
+    background: -moz-linear-gradient(#fbd568, #ffb347);
+    background: -ms-linear-gradient(#fbd568, #ffb347);
+    background: -o-linear-gradient(#fbd568, #ffb347);
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#fbd568), to(#ffb347));
+    background: -webkit-linear-gradient(#fbd568, #ffb347);
+    background: linear-gradient(#fbd568, #ffb347);
+    border: 1px solid #f4ab4c;
+    color: #996319;
+    text-shadow: 0 1px rgba(255,255,255,0.3);
+	padding:20px;
+	position:relative;
+	-webkit-border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
+	font-weight: 400;
+	letter-spacing: -1px;
+}
+
+.form-area h1 strong {
+	font-weight:bold;
+	font-size:26px;
+	text-transform: uppercase;
+}
+
+.form-area-bottom {
+	clear:both;
+	margin-top:15px;
+    background: #fbd568;
+    background: -moz-linear-gradient(#fbd568, #ffb347);
+    background: -ms-linear-gradient(#fbd568, #ffb347);
+    background: -o-linear-gradient(#fbd568, #ffb347);
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#fbd568), to(#ffb347));
+    background: -webkit-linear-gradient(#fbd568, #ffb347);
+    background: linear-gradient(#fbd568, #ffb347);
+    border: 1px solid #f4ab4c;
+	height:10px;
+	-webkit-border-radius:  0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+	margin-left:-20px;
+	margin-right:-20px;
+}	
+
+.form-area input, #buttom-subscribe input{
+    font-family: 'open Sans', Lucida Sans Unicode, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    display: block;
+    width: 100%;
+    padding: 10px 5px;
+	min-height: 40px;
+    margin-bottom: 15px!important;
+    border: 2px solid #ebe6e2;
+    border-radius: 5px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+	margin-bottom: 10px;
+}
+
+.form-area input[type="submit"], #buttom-subscribe input[type="submit"] {
+	border: 1px solid rgba(0,0,0,0.05);
+	font-weight:bold;
+	font-size: 13px;
+	text-transform: uppercase;
+	background: #fbd568;
+	background: -moz-linear-gradient(#fbd568, #ffb347);
+	background: -ms-linear-gradient(#fbd568, #ffb347);
+	background: -o-linear-gradient(#fbd568, #ffb347);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#fbd568), to(#ffb347));
+	background: -webkit-linear-gradient(#fbd568, #ffb347);
+	background: linear-gradient(#fbd568, #ffb347);
+	color: #996319;
+}
+
+.form-area input[type="submit"]:hover, #buttom-subscribe input[type="submit"]:hover {
+	background: #65bdfe;
+	background: -moz-linear-gradient(top, #65bdfe 0%, #429cff 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#65bdfe), color-stop(100%,#429cff));
+	background: -webkit-linear-gradient(top, #65bdfe 0%,#429cff 100%);
+	background: -o-linear-gradient(top, #65bdfe 0%,#429cff 100%);
+	background: -ms-linear-gradient(top, #65bdfe 0%,#429cff 100%);
+	background: linear-gradient(to bottom, #65bdfe 0%,#429cff 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65bdfe', endColorstr='#429cff',GradientType=0 );
+	color: #FFF;
+	border: 1px solid rgba(0,0,0.5);
+}

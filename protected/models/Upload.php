@@ -5,7 +5,7 @@ public $file;
 public function rules()
 {
 return array(
-array('file', 'file', 'types'=>'csv'),
+array('file', 'file', 'types'=>'xml'),
 );
 }
 }

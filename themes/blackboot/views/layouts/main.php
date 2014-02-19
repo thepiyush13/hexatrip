@@ -30,18 +30,23 @@
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
 <!-- Le styles -->
+
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/bootstrap-responsive.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/style.css" />
 
 <link href='http://fonts.googleapis.com/css?family=Lato:400,100,300,700,900,900italic,300italic' rel='stylesheet' type='text/css' />
+
 <?php 
 $baseUrl = Yii::app()->theme->baseUrl; 
 	  $cs = Yii::app()->getClientScript();
 // $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/form.css');
+          
           $cs->registerCssFile('http://simplesphere.net/demo/leadgen/default/css/style.css');
+//          $cs->registerCssFile(Yii::app()->theme->baseUrl."/css/home/style.css"); 
            $cs->registerCssFile('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css');
            ?>
+<!--<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main_page.style.css" />-->
 <!-- Le fav and touch icons -->
 <style>
     .brand{        
@@ -173,8 +178,7 @@ $baseUrl = Yii::app()->theme->baseUrl;
 function get_menu_array(){
     $base_items = array(
                             array('label'=>'Home', 'url'=>array('/site/index')),
-                            array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
-                            array('label'=>'Contact', 'url'=>array('/site/contact')),
+                           
                             array('label'=>'Alerts', 'url'=>array('/alert/'), 'visible'=>!Yii::app()->user->isGuest     ),
                             array('url'=>Yii::app()->getModule('user')->loginUrl, 'label'=>Yii::app()->getModule('user')->t("Login"), 
                                 'visible'=>Yii::app()->user->isGuest),
@@ -185,6 +189,9 @@ function get_menu_array(){
                             array('url'=>Yii::app()->getModule('user')->logoutUrl, 
                                 'label'=>Yii::app()->getModule('user')->t("Logout").' ('.Yii::app()->user->name.')',
                                 'visible'=>!Yii::app()->user->isGuest),
+         array('label'=>'About', 'url'=>array('/site/page', 'view'=>'about')),
+//                            array('label'=>'Contact', 'url'=>array('/site/contact')),
+         array('label'=>'Disclaimer', 'url'=>array('/site/page', 'view'=>'disclaimer')),
         );
     
     $admin_items = array(
