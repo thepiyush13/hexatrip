@@ -67,7 +67,7 @@
 ">Step2</h2>
   <h5 class="text-center" style="
     text-align: center;
-">Setup and alert with us.Its easy and free</h5>
+">Setup an alert with us.Its easy and free</h5>
   <p class="text-center" style="
     text-align: center;
 "><i class="fa fa-bell-o fa-3x base-color center" style="
