@@ -68,6 +68,13 @@ class Alert extends CActiveRecord
                                             array(' date_from, date_to', 'required'),
                     array('date_from', 'type', 'type' => 'date', 'message' => '{attribute}: is not a date!', 'dateFormat' => 'dd-MM-yyyy'),
                      array('date_to', 'type', 'type' => 'date', 'message' => '{attribute}: is not a date!', 'dateFormat' => 'dd-MM-yyyy'),
+                     array('updated','default',
+              'value'=>new CDbExpression('NOW()'),
+              'setOnEmpty'=>false,'on'=>'update'),
+        array('created,updated','default',
+              'value'=>new CDbExpression('NOW()'),
+              'setOnEmpty'=>false,'on'=>'insert'),
+
                     
                     
 			// The following rule is used by search().
