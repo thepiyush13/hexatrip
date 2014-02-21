@@ -1,22 +1,15 @@
-<?php
-/* @var $this DashboardController */
-
-$this->breadcrumbs=array(
-	'Dashboard',
-);
-
-$this->menu=array(
-	array('label'=>'Load Train Data', 'url'=>array('//tempTrainStatus/loadData ')),
-	array('label'=>'Send Email', 'url'=>array('sendMail')),
-);
-?>
+<h1>Send Emails </h1>
 <div class="row-fluid">
     <div>
         <br/>
     </div>
+    
+    
+    <?php  if(isset($dataProvider)){  ?>
+    
     <?php echo CHtml::beginForm(); ?>
 
-<?php
+<?php 
 $columns = array_keys(AlertStatus::model()->metaData->columns);
 $columns[array_search('alert_id', $columns)] = 
         array(
@@ -29,7 +22,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$dataProvider,
     'selectableRows' => 20,
     'columns' =>$columns
-
+   
 ));
 ?>
 
@@ -44,7 +37,7 @@ $this->widget('zii.widgets.grid.CGridView', array(
 
 <?php echo CHtml::endForm(); ?>
     
-    
+    <?php } ?>
     
 <?php
 

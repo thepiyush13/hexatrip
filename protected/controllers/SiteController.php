@@ -60,6 +60,16 @@ class SiteController extends Controller {
             return true;
         }
         
+         //check If date to is less then date from 
+          if ($_POST['Alert']['date_from'] > $_POST['Alert']['date_to']) {          
+           Yii::app()->user->setFlash('error', "Starting date can not be greater than Ending date!");   
+            
+           $this->render('index',array(
+			'model'=>$model,
+		));
+            return true;
+        }
+        
         
  
         

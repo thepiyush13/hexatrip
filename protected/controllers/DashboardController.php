@@ -6,7 +6,7 @@ class DashboardController extends Controller {
      * @return array action filters
      */
     
-    public $layout='//layouts/column2';
+    public $layout='//layouts/column1';
     public function filters() {
         return array(
             'accessControl', // perform access control for CRUD operations
@@ -46,14 +46,74 @@ class DashboardController extends Controller {
      * @return Return unique routes for alerts - from-to-date combo unique
      */
     public function actionIndex() {
+        $result = array();
+        
+        
+        //get alert count
+        $sql = "SELECT COUNT(*) FROM alert where status = 1";
+        $result['alert_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        //get user count
+        $sql = "SELECT COUNT(*) FROM tbl_users where status = 1";
+        $result['user_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        //get locations count 
+        $sql = "SELECT COUNT(*) FROM location where status = 1";
+        $result['location_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+        //get email to sent count 
+        $sql = "SELECT COUNT(*) FROM alert_status";
+        $result['email_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        //get route count 
         $sql = "select * from alert
   where alert.status= 1  and 
-  alert.train = 1 and
   location_from<>location_to 
-  and date_from between NOW() and date_add(NOW(),INTERVAL 2 MONTH) 
+  and date_from > now()
   and date_to > now()
-group by location_from,location_to
-";
+  and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
+  group by location_from,location_to";
+        $result['route_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+         //get email last sent date 
+        $sql = "select DATE_FORMAT(created,'%d%b %y-%h:%s %p') from email_archive order by created desc limit 1";
+        $result['email_last_sent'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+        //get Today emails counts 
+        $sql = "  select count(*)  from email_archive where created <= NOW() && created >= (NOW() - INTERVAL 1 DAY)";
+        $result['email_today'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+        //get weeks emails counts 
+        $sql = "  select count(*)  from email_archive where created <= NOW() && created >= (NOW() - INTERVAL 7 DAY)";
+        $result['email_week'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+        //get total emails counts 
+        $sql = "  select count(*)  from email_archive ";
+        $result['email_total'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+         //get Today alert counts 
+        $sql = "  select count(*)  from alert where status=1 and created <= NOW() && created >= (NOW() - INTERVAL 1 DAY)";
+        $result['alert_today'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+        //get weeks alert counts 
+        $sql = "  select count(*)  from alert where status=1 and created <= NOW() && created >= (NOW() - INTERVAL 7 DAY)";
+        $result['alert_week'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        
+       
+        
+        
+        $this->render('index', array(
+            'result'=>$result
+                )
+        );
+
+    }
+    
+    public function actionRoutes(){
+        $sql = "select * from alert
+  where alert.status= 1  and 
+  location_from<>location_to 
+  and date_from > now()
+  and date_to > now()
+  and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
+  group by location_from,location_to";
         $routes = Yii::app()->db->createCommand($sql)->queryAll();
         $sql = "select * from location";
         $locations = Yii::app()->db->createCommand($sql)->queryAll();
@@ -77,7 +137,6 @@ group by location_from,location_to
             $output[$key]['id'] = $key+1;
             
         }
-
         $this->render('routes', array(
             'result' => $output
                 )
@@ -134,6 +193,7 @@ group by location_from,location_to
             //get alert email
             $alert_data  = Alert::model()->findByPK($changed_alert);
             $alert_email =  $modelCommon->alert_user_property($changed_alert, 'email')  ;        
+            $alert_user_id = $modelCommon->alert_user_property($changed_alert, 'id')  ;        
             //create notification string for this alerts
             $alert_msg = $this->alert_msg($alert_data,$changed_alert);
             //now generating html array to be passed to view file
@@ -148,19 +208,28 @@ group by location_from,location_to
             //add to email queue
             $mail_data['email_to'] = $alert_email;    
             $mail_data['view_file'] = 'alert_mail';
-            $mail_data['subject'] = "Hi ".$temp['username'].", Alert Update for your route ";            
+            $mail_data['subject'] = "Hi ".$temp['username'].", Alert Update for your route ";
             
+           
             if($modelCommon->send_mail($mail_data)){
                 //mail sends successful - now delete this record 
                 AlertStatus::model()->deleteAll('alert_id=:alertID',array(':alertID'=>$changed_alert));
+                //add for tracking purpose
+                         $emailArchive = new EmailArchive;
+                         $emailArchive->alert_id = $changed_alert;
+                         $emailArchive->user_id = $alert_user_id;                        
+                        if(!$emailArchive->Save()){
+                            Yii::app()->user->setFlash('error', "cant add email to archive ");
+                        };
+            
+            
             }
     
         }
-        //die(print_r($changed_alerts));
         
       
-        $this->render('index', array(
-          
+        $this->render('send_mail', array(
+          'dataProvider' =>NULL,
                 )
         );
     }
@@ -195,12 +264,22 @@ group by location_from,location_to
             $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id);
             $alert_train_data['matched']  = TempTrainStatus::model()->findAll($criteria); 
                 //finding future ticket macthing 
-             $criteria = new CDbCriteria;
-            $criteria->condition='location_from =  :location_from AND location_to = :location_to AND date > :date_to';
             
-            $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id,':date_to'=>$date_to);
-            $alert_train_data['future']  = TempTrainStatus::model()->findAll($criteria);
-            $msg['train']= $this->create_train_table($alert_train_data);
+//            
+//            $list= Yii::app()->db->createCommand('select * from post')->queryAll();
+//             $criteria = new CDbCriteria;
+//             $criteria->select = 'SUM(available) as total_tickets ';
+//            $criteria->condition='location_from =  :location_from AND location_to = :location_to AND date > :date_to';
+//            $criteria->group = 'date';            
+//            $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id,':date_to'=>$date_to);
+//            $x = new CActiveDataProvider('TempTrainStatus', array('criteria'=>$criteria));
+//             $alert_train_data['future']  = TempTrainStatus::model()->findAll($criteria);
+            
+             $sql = "SELECT *,SUM(available) as total_tickets FROM temp_train_status 
+                WHERE location_from =  $from_id AND location_to = $to_id AND date > '$date_to'
+                GROUP BY date";
+             $alert_train_data['future'] = Yii::app()->db->createCommand($sql)->queryAll();
+             $msg['train']= $this->create_train_table($alert_train_data);
             
             //find other information
             $msg['flight']= $this->create_flight_table($alert_data);
@@ -235,7 +314,7 @@ group by location_from,location_to
         if($data_matched){
             $result.= '<h3>Total '.count($data_matched).' Train(s) found for your route</h3>';
         $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Train Number</th><th>Train Name</th>
-            <th>Date</th><th>Class</th><th>Available Seats</th></tr>";
+            <th>Date</th><th>Class</th><th>Available Seats</th><th>Action</th></tr>";
 foreach($data_matched as $k=>$vv){
      
     $result.="<tr>";
@@ -245,6 +324,7 @@ foreach($data_matched as $k=>$vv){
         $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date']) ."</td>";
         $result.="<td>".$vv['type']."</td>";
         $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
+        $result.="<td><a href='http://www.irctc.co.in'>Book now</a></td>";
         
     $result.="<tr>";
 }
@@ -252,20 +332,24 @@ $result.="</table>";
         }
         //show future table also
         if($data_future){
-            $result.= '<h3>Total '.count($data_future).' Future Train(s) If above trains are not suitable</h3>';
-        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Train Number</th><th>Train Name</th>
-            <th>Date</th><th>Class</th><th>Available Seats</th></tr>";
+            $total = 20;
+            $result.= '<h3>Next available tickets </h3>';
+        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Total Available Seats</th> <th>Action</th></tr>";
 foreach($data_future as $k=>$vv){
      
+           
     $result.="<tr>";
      $result.="<td>".($k+1)."</td>";
-        $result.="<td>".$vv['train_id']."</td>";
-        $result.="<td>".$vv['train_name']."</td>";
         $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date'])."</td>";
-        $result.="<td>".$vv['type']."</td>";
-        $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
+        $result.="<td>".$vv['total_tickets']."</td>";
+        $result.="<td><a href='http://www.irctc.co.in'>See details</a></td>";
+       
         
     $result.="<tr>";
+    //only next 20 trains 
+    if($k>=$total){
+        break;
+    }
 }
 $result.="</table>";
         }

@@ -11,14 +11,13 @@ $this->menu=array(
 );
 ?>
 <h1>Unique Routes</h1>
-<?php
-//$this->widget('zii.widgets.CMenu',array(
-//			'items'=>array(
-//				array('label'=>'Download Routes as csv', 'url'=>array('/dashboard/downloadroutes')),
-////				array('label'=>'Upload Route Data', 'url'=>array('/dashboard/upload')),
-//				
-//			),
-//		)); 
+<?php $this->widget('zii.widgets.CMenu',array(
+			'items'=>array(
+				array('label'=>'Download Routes as csv', 'url'=>array('/dashboard/downloadroutes')),
+//				array('label'=>'Upload Route Data', 'url'=>array('/dashboard/upload')),
+
+			),
+		)); 
 
 //main table for routes display 
 
