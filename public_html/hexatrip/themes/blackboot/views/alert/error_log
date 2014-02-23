@@ -1,0 +1,7 @@
+[16-Feb-2014 20:04:37 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[16-Feb-2014 20:35:51 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[18-Feb-2014 04:04:29 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[20-Feb-2014 12:56:05 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[20-Feb-2014 19:40:35 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[22-Feb-2014 14:40:37 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5
+[23-Feb-2014 03:22:31 America/Denver] PHP Fatal error:  Using $this when not in object context in /home5/mobilel5/public_html/hexatrip/themes/blackboot/views/alert/index.php on line 5

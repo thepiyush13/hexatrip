@@ -1,8 +1,8 @@
 <?php
 
 // change the following paths if necessary
-$yii='/home5/mobilel5/travelresult-tools/yii.php';
-$config=dirname(__FILE__).'/protected/config/main.php';
+$yii='/home5/mobilel5/sites/hexatrip/Yii/yii.php';
+$config='/home5/mobilel5/sites/hexatrip/protected/config/main.php';
 
 // remove the following lines when in production mode
 //defined('YII_DEBUG') or define('YII_DEBUG',true);
