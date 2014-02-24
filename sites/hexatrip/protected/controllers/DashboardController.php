@@ -41,7 +41,7 @@ class DashboardController extends Controller {
 //    public function actionIndex() {
 //        $this->render('index');
 //    }
-
+    
     /**
      * @return Return unique routes for alerts - from-to-date combo unique
      */
@@ -63,14 +63,14 @@ class DashboardController extends Controller {
         $sql = "SELECT COUNT(*) FROM alert_status";
         $result['email_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
         //get route count 
-        $sql = "select * from alert
+        $sql = "select COUNT(*)  from alert
   where alert.status= 1  and 
   location_from<>location_to 
   and date_from > now()
   and date_to > now()
   and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
   group by location_from,location_to";
-        $result['route_count'] = Yii::app()->db->createCommand($sql)->queryScalar();
+        $result['route_count'] = count(Yii::app()->db->createCommand($sql)->queryAll());
         
          //get email last sent date 
         $sql = "select DATE_FORMAT(created,'%d%b %y-%h:%s %p') from email_archive order by created desc limit 1";
@@ -96,8 +96,19 @@ class DashboardController extends Controller {
         $sql = "  select count(*)  from alert where status=1 and created <= NOW() && created >= (NOW() - INTERVAL 7 DAY)";
         $result['alert_week'] = Yii::app()->db->createCommand($sql)->queryScalar();
         
+         //get Chart data 
+        $sql = "  select CONCAT(COUNT(*),'|',DATE(FROM_UNIXTIME(createtime))) as count from tbl_users group by DATE(FROM_UNIXTIME(createtime))";
+        $temp = Yii::app()->db->createCommand($sql)->queryAll();
+        foreach ($temp as $key => $value) {
+            $result['chart_data']['user_chart'][] = explode('|',$value['count']);
+        }
        
-        
+        //get EMAIL Chart data 
+        $sql = "  select CONCAT(COUNT(*),'|',DATE(created)) as count from email_archive group by DATE(created)";
+        $temp = Yii::app()->db->createCommand($sql)->queryAll();
+        foreach ($temp as $key => $value) {
+            $result['chart_data']['email_chart'][] = explode('|',$value['count']);
+        }
         
         $this->render('index', array(
             'result'=>$result
@@ -211,7 +222,7 @@ class DashboardController extends Controller {
             //add to email queue
             $mail_data['email_to'] = $alert_email;    
             $mail_data['view_file'] = 'alert_mail';
-            $mail_data['subject'] = "Hi ".$temp['username'].",Hexaalert for your route {$from} - {$to} ";
+            $mail_data['subject'] = "Hi ".$temp['username'].",HexaAlert for your route {$from} - {$to} ";
             
            
             if($modelCommon->send_mail($mail_data)){
@@ -422,7 +433,7 @@ $details = array(
     'details_headline'=>'',
     'details_message'=>"",
     'contact_info'=>"We Love your feedback.<br/> Mail us at : admin@hexatrip.com <br/> <b>Direct Feedback: <a href='$contact_url'>Feedback</a>  </b>",
-    'footer_links'=>"<a href='$alert_url'>Change this alert</a> | <a href='$alert_url'>Add new alert</a> | <a href='$alert_url'>Unsubscribe</a>",
+    'footer_links'=>"<a href='$alert_url'>Change this alert</a> | <a href='$alert_url'>Add new alert</a> | <a href='$alert_url'>Unsubscribe</a><br/>br/>*Above information is estimated from various sources.Please visit official websites for correct information.",
                    'site_name'=>Yii::app()->name,
                );
                

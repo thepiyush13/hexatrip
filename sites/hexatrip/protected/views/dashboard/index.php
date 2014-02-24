@@ -49,7 +49,24 @@ margin: 4px;
 </style>
 <br/>
 <div class="row-fluid">
-          <div class="span2">
+    <div class="span4"><?php
+$array= $result['chart_data']['user_chart'];
+
+//   die(print_r($array));      
+$this->widget('jqBarGraph',
+array('values'=>$array,
+'type'=>'simple',
+'width'=>400,
+'color1'=>'#122A47',
+'color2'=>'#122A47',
+'space'=>5,
+'title'=>'user Growth'));
+
+
+?></div>
+    
+    <div class="span8">
+        <div class="row-fluid"><div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -63,7 +80,7 @@ margin: 4px;
               </div>
            
             </div>
-          </div><div class="span2">
+          </div><div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -77,8 +94,8 @@ margin: 4px;
               </div>
            
             </div>
-          </div>
-    <div class="span2">
+          </div></div>
+        <div class="row-fluid"><div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -94,7 +111,7 @@ margin: 4px;
             </div>
           </div>
     
-    <div class="span2">
+    <div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -108,8 +125,8 @@ margin: 4px;
               </div>
            
             </div>
-          </div>
-    <div class="span2">
+          </div></div>
+        <div class="row-fluid"> <div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -123,7 +140,7 @@ margin: 4px;
               </div>
            
             </div>
-          </div><div class="span2">
+          </div><div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
@@ -137,7 +154,15 @@ margin: 4px;
               </div>
            
             </div>
-          </div>
+          </div></div>
+    </div>
+</div>
+<div class="row-fluid">
+    
+    
+          
+    
+   
      <div class="row-fluid"><br><hr></div>
           
          
@@ -272,3 +297,14 @@ margin: 4px;
           </div>
          
         </div>
+
+
+<?php
+//$data = isset($result['chart_data'])? $result['chart_data'] : 'ddd';
+//$script = <<<JavaScript
+//    $(document).ready(function(){
+//        var data = '{$data}';
+//        dashboard_charts(data) ;
+//        });
+//JavaScript;
+//Yii::app()->getClientScript()->registerScript('id',$script);

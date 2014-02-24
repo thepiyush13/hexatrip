@@ -29,6 +29,7 @@ for (var i = 1; i < routes.length; i++) {  //i=1 to omit header of table
             var train_data = get_train_data(start_from,train,route);
              find_trains(route);
            // save_to_db(train_data, FILE_NAME);
+             iimDisplay('currently on route no:' +i+' - Train no :' +j);
              humanize('medium');
           
         }
@@ -39,7 +40,7 @@ for (var i = 1; i < routes.length; i++) {  //i=1 to omit header of table
     //emulate user behaviour - after route
     humanize('advance');
     
-
+ 
 }
 
 /*************---------------------------------- FUNCTION LIST -------------------------------------------------------------********/

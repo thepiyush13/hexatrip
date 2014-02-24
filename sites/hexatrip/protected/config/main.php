@@ -21,6 +21,7 @@ return array(
              'application.modules.user.models.*',
                 'application.modules.user.components.*',
             'ext.yii-mail.YiiMailMessage',
+              'application.extensions.jqBarGraph.*',
 	),
 
 	'modules'=>array(
