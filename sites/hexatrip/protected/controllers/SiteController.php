@@ -103,6 +103,7 @@ class SiteController extends Controller {
         
         //if alert is created - show alert update page for further changes 
         if($alert){
+             Yii::app()->user->setFlash('success', "Congrats ! Your alerts has been successfully created, You can add extra details to your alert on this page");  
             $this->redirect(array('alert/update','id'=>$alert));
         }
     }

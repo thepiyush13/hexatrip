@@ -340,15 +340,16 @@ class DashboardController extends Controller {
         //if data is macthed - show main table 
         if($data_matched){
             $result.= '<h3>Total '.count($data_matched).' Train(s) found for your route</h3>';
-        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Train Number</th><th>Train Name</th>
-            <th>Date</th><th>Class</th><th>Available Seats</th><th>Action</th></tr>";
+        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Day</th><th>Train Number</th><th>Train Name</th>
+            <th>Class</th><th>Available Seats</th><th>Action</th></tr>";
 foreach($data_matched as $k=>$vv){
      
     $result.="<tr>";
      $result.="<td>".($k+1)."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $vv['date']) ."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format ("EEE", $vv['date']) ."</td>";
         $result.="<td>".$vv['train_id']."</td>";
         $result.="<td>".$vv['train_name']."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date']) ."</td>";
         $result.="<td>".$vv['type']."</td>";
         $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
         $result.="<td><a href='http://www.irctc.co.in'>Book now</a></td>";
@@ -361,13 +362,14 @@ $result.="</table>";
         if($data_future){
             $total = 20;
             $result.= '<h3>Next available tickets </h3>';
-        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Total Available Seats</th> <th>Action</th></tr>";
+        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Day</th><th>Total Available Seats</th> <th>Action</th></tr>";
 foreach($data_future as $k=>$vv){
      
            
     $result.="<tr>";
      $result.="<td>".($k+1)."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MM-yyyy", $vv['date'])."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $vv['date'])."</td>";
+        $result.="<td>".Yii::app()->dateFormatter->format ("EEE", $vv['date']) ."</td>";
         $result.="<td>".$vv['total_tickets']."</td>";
         $result.="<td><a href='http://www.irctc.co.in'>See details</a></td>";
        
