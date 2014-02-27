@@ -10,18 +10,66 @@
     <?php echo CHtml::beginForm(); ?>
 
 <?php 
-$columns = array_keys(AlertStatus::model()->metaData->columns);
-$columns[array_search('alert_id', $columns)] = 
-        array(
-        'name'=>'Alert ID',             'value'=>'CHtml::checkBox("selectedAlerts[]",null,array("value"=>$data->alert_id,"id"=>"cid_".$data->id))',
-        'type'=>'raw',
-        'htmlOptions'=>array('width'=>5),
-        //'visible'=>false,
-        );
+//$columns = array_keys($dataProvider->metaData->columns);
+//$columns[array_search('alert_id', $columns)] = 
+//        array(
+//        'name'=>'Alert ID',             'value'=>'CHtml::checkBox("selectedAlerts[]",null,array("value"=>$data->alert_id,"id"=>"cid_".$data->id))',
+//        'type'=>'raw',
+//        'htmlOptions'=>array('width'=>5),
+//        //'visible'=>false,
+//        );
 $this->widget('zii.widgets.grid.CGridView', array(
     'dataProvider'=>$dataProvider,
     'selectableRows' => 20,
-    'columns' =>$columns
+    'columns'=>array(
+    array(
+        'name'=>'#',
+        'type'=>'raw',
+        'value'=>'CHtml::checkBox("selectedAlerts[]",null,array("value"=>$data["alert_id"],"id"=>"cid_".$data["alert_id"]))'
+    ),
+     array(
+        'name'=>'Alert ID',
+        'value'=>'$data["alert_id"]'
+    ),
+         array(
+        'name'=>'Alert Email',
+        'value'=>'$data["alert_email"]'
+    ),
+        array(
+        'name'=>'Alert Name',
+        'value'=>'$data["alert_name"]'
+    ),
+         array(
+        'name'=>'Alert Desc',
+        'value'=>'$data["alert_desc"]'
+    ),
+        array(
+        'name'=>'Alert From',
+        'value'=>'$data["alert_from"]'
+    ),
+          array(
+        'name'=>'Alert To',
+        'value'=>'$data["alert_to"]'
+    ),
+        array(
+        'name'=>'Date From',
+        'value'=>'$data["date_from"]'
+    ),
+         array(
+        'name'=>'Date To',
+        'value'=>'$data["date_to"]'
+    ),
+        array(
+        'name'=>'Created',
+        'value'=>'$data["created"]'
+    ),
+          array(
+        'name'=>'Updated',
+        'value'=>'$data["updated"]'
+    ),
+   
+        )
+    
    
 ));
 ?>

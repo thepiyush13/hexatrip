@@ -53,6 +53,11 @@ $baseUrl = Yii::app()->theme->baseUrl;
     color: black;
     font-weight: bolder;
     }
+    .paginate_button{
+        padding: 7px;
+/*border-left: 1px solid rgb(204, 204, 204);*/
+
+    }
     </style>
 </head>
 

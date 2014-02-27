@@ -12,6 +12,9 @@
         ROW_START_TRAIN_LISTING = 3;  //row in the table where train data starts in train listing page 
         FILE_NAME = 'Train_Status_'+get_time_stamp()+'.xml';        
         TRAIN_LISTING_URL = 'www.indianrail.gov.in/dont_Know_Station_Code.html';
+//load dashboard 
+load_url ('http://hexatrip.com/index.php?r=dashboard');
+iimPlay('CODE: PAUSE');
 var routes = new Array();
 routes = get_routes();
 

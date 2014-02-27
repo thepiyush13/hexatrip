@@ -27,6 +27,8 @@ class DashboardController extends Controller {
                     'downloadFormat',
                     'loadData',
                     'sendMail',
+                    'UserRoutes',
+                    'RouteData'
                     
                     
                     ),
@@ -102,14 +104,14 @@ class DashboardController extends Controller {
         foreach ($temp as $key => $value) {
             $result['chart_data']['user_chart'][] = explode('|',$value['count']);
         }
-       
+        
         //get EMAIL Chart data 
         $sql = "  select CONCAT(COUNT(*),'|',DATE(created)) as count from email_archive group by DATE(created)";
         $temp = Yii::app()->db->createCommand($sql)->queryAll();
         foreach ($temp as $key => $value) {
             $result['chart_data']['email_chart'][] = explode('|',$value['count']);
         }
-        
+            
         $this->render('index', array(
             'result'=>$result
                 )
@@ -167,35 +169,46 @@ class DashboardController extends Controller {
         //if no posted data - first time view - show alert email selection form
         if (!isset($_POST['ApproveButton'])|| !isset($_POST['selectedAlerts']) ){
             //$dataProvider = AlertStatus::model()->findAll();
-            $dataProvider = new CActiveDataProvider('AlertStatus', array(
-            'data'=>AlertStatus::model()->findAll(),
+            $query = "select 
+              b.email as alert_email,
+              x.id as alert_id,
+              x.name as alert_name,
+              x.desc as alert_desc,
+              z.name as alert_from,
+              a.name as alert_to,
+              x.date_from as date_from,
+              x.date_to as date_to,
+              x.created as created,
+              x.updated as updated 
+              from alert as x 
+              join alert_status as y 
+              on x.id = y.alert_id
+              join location as z on(x.location_from = z.id)
+                join location as a on(x.location_to = a.id)
+              join tbl_users as b on x.user_id = b.id 
+              where x.status = 1
+              order by x.created";
+
+            
+            $count=count(Yii::app()->db->createCommand($query)->queryAll());
+            $dataProvider = new CSqlDataProvider($query, array(
+                     'totalItemCount'=>$count,
+                'keyField' => 'alert_id',
+                'pagination'=>array(
+                'pageSize'=>10,
+             ),
     ));
             $this->render('send_mail', array(
         'dataProvider' => $dataProvider,
     ));
             return TRUE;
+             
         }
+        
         
         //some data is posted - prepare and send email for this data
         $changed_alerts = $_POST['selectedAlerts'];
        
-        //array_shift($changed_alerts); //remove first element , the header checkbox 
-         
-//        die(print_r($changed_alerts));
-        
-        //get all the alerts where critieria is found 
-        //$changed_alerts  =  array_keys(CHtml::listData(AlertStatus::model()->findAll(),'alert_id','alert_id'));        
-        //$changed_alerts_list  =  implode(',', $changed_alerts);
-        
-//        $alert_details = Yii::app()->db->createCommand("SELECT 
-//             y.id as alert_unique_id,x.*,y.*,z.* 
-//            FROM  tbl_users AS x 
-//                JOIN alert AS y 
-//                ON x.id =  y.user_id 
-//                JOIN alert_status as z
-//                ON y.id = z.alert_id
-//                AND y.id IN($changed_alerts_list)")->queryAll();
-        
         //now looping through each of these matched alerts
         $modelCommon = new Common;
         foreach ($changed_alerts as $key => $changed_alert) {
@@ -856,5 +869,72 @@ group by x.id";
             Yii::app()->user->setFlash('success', "Success! Data Saved");
   }
   
+/**
+     * @return Returns users email and alerts setup by them
+     */
+  public   function actionUserRoutes(){     
+$sql = "SELECT 
+  x.id AS alert_id,
+  x.name AS alert_name,
+  x.desc AS alert_desc,
+    z.name AS alert_from,
+  a.name AS alert_to,
+  x.date_from AS date_from,
+  x.date_to AS date_to,
+  y.username AS username,
+  y.email AS email,
+  x.created AS created,
+  x.updated AS updated 
+  FROM alert AS x 
+  JOIN tbl_users AS y 
+  ON x.user_id = y.id
+  JOIN location AS z on(x.location_from = z.id)
+    JOIN location AS a on(x.location_to = a.id)
+  WHERE x.status = 1
+  ORDER BY y.email";
 
+ 
+ $query = $sql;
+$count=count(Yii::app()->db->createCommand($query)->queryAll());
+$dataProvider = new CSqlDataProvider($query, array(
+         'totalItemCount'=>$count,
+    'keyField' => 'alert_id',
+    'pagination'=>False
+    ));
+  $this->render('user_routes'
+          , array('result'=>$dataProvider));
+                    return true;
+      
+  }  
+  
+  /**
+     * @return Returns route related data
+     */
+  public   function actionRouteData(){     
+$query = "select x.id as id,
+ y.name as location_from,
+   z.name as location_to,
+  x.date as date,
+  x.train_id as train_number,
+  x.train_name as train_name,
+  x.type as train_type,
+  x.available as available_seats,
+  x.desc as comments,
+  x.updated as updated,
+  x.created as created
+  from temp_train_status as x 
+  join location as y on(x.location_from = y.id)
+    join location as z on(x.location_to = z.id)
+  order by y.name,z.name,x.date";
+$count=count(Yii::app()->db->createCommand($query)->queryAll());
+$dataProvider = new CSqlDataProvider($query, array(
+         'totalItemCount'=>$count,
+    'keyField' => 'id',
+    'pagination'=>false
+    ));
+  $this->render('user_routes'
+          , array('result'=>$dataProvider));
+                    return true;
+      
+}
 }

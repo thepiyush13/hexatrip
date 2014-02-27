@@ -51,7 +51,6 @@ margin: 4px;
 <div class="row-fluid">
     <div class="span4"><?php
 $array= $result['chart_data']['user_chart'];
-
 //   die(print_r($array));      
 $this->widget('jqBarGraph',
 array('values'=>$array,
@@ -60,110 +59,78 @@ array('values'=>$array,
 'color1'=>'#122A47',
 'color2'=>'#122A47',
 'space'=>5,
+    'id'=>'graph1',
 'title'=>'user Growth'));
 
 
 ?></div>
     
     <div class="span8">
-        <div class="row-fluid"><div class="span6">
+        <div class="row-fluid">
+            <div class="span6">
             <div class="panel panel-info">
               <div class="panel-heading">
                 <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['email_last_sent'] ?></p>
-                    <p class="announcement-text">Email last sent</p>
+                  <ul>
+                  <li>
+                    <span class="announcement-heading"><?php  echo $result['email_last_sent'] ?></span>
+                    <span class="announcement-text1">Email last sent </span>
                     
-                  </div>
+                  </li>
+                    <li>
+                    <span class="announcement-heading"><?php  echo $result['email_today'] ?> </span>
+                    <span class="announcement-text1">Mails Sent Today</span>
+                    
+                  </li>
+                     <li>
+                    <span class="announcement-heading"><?php  echo $result['email_week'] ?></span>
+                    <span class="announcement-text1">Mails Sent Last Week</span>
+                    
+                  </li>
+                      <li>
+                    <span class="announcement-heading"><?php  echo $result['email_total'] ?></span>
+                    <span class="announcement-text1">Total Mails Sent </span>
+                    
+                  </li>
+                     <li>
+                    <span class="announcement-heading"><?php  echo $result['alert_today'] ?></span>
+                    <span class="announcement-text1">New alerts today</span>
+                    
+                  </li>
+                    <li>
+                    <span class="announcement-heading"><?php  echo $result['alert_week'] ?></span>
+                    <span class="announcement-text1">New alerts last week </span>
+                    
+                  </li>
+</ul>
+                </div>
                 </div>
               </div>
            
             </div>
-          </div><div class="span6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['email_today'] ?></p>
-                    <p class="announcement-text">Mails Sent Today</p>
-                    
-                  </div>
-                </div>
-              </div>
+            <div class="span6">
+                <ul>
+                    <li><p><i class="fa fa-calendar-o fa-2x"></i>  <a class="" href="<?php  echo $this->createUrl('//dashboard/routeData')  ?>" >  View Available Data</a></p></li>
+                    <li><p><i class="fa fa-users fa-2x"></i>  <a class="" href="<?php  echo $this->createUrl('//dashboard/userRoutes')  ?>" >View User Alerts</a></p></li>
+                </ul>
+                <p>
+            
            
-            </div>
-          </div></div>
-        <div class="row-fluid"><div class="span6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['email_week'] ?></p>
-                    <p class="announcement-text">Mails Sent Last Week</p>
-                    
-                  </div>
-                </div>
-              </div>
-           
+            </p>
             </div>
           </div>
-    
-    <div class="span6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['email_total'] ?></p>
-                    <p class="announcement-text">Total Mails Sent </p>
-                    
-                  </div>
-                </div>
-              </div>
-           
-            </div>
-          </div></div>
-        <div class="row-fluid"> <div class="span6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['alert_today'] ?></p>
-                    <p class="announcement-text">New alerts today</p>
-                    
-                  </div>
-                </div>
-              </div>
-           
-            </div>
-          </div><div class="span6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row-fluid">
-                  
-                  <div class="span12 text-right">
-                    <p class="announcement-heading"><?php  echo $result['alert_week'] ?></p>
-                    <p class="announcement-text">New alerts last week </p>
-                    
-                  </div>
-                </div>
-              </div>
-           
-            </div>
-          </div></div>
-    </div>
-</div>
+        </div>
+       
 <div class="row-fluid">
     
     
           
     
    
-     <div class="row-fluid"><br><hr></div>
+     <div class="row-fluid">
+            <hr>
+      
+     </div>
           
          
         </div>
@@ -297,14 +264,70 @@ array('values'=>$array,
           </div>
          
         </div>
-
-
-<?php
-//$data = isset($result['chart_data'])? $result['chart_data'] : 'ddd';
-//$script = <<<JavaScript
-//    $(document).ready(function(){
-//        var data = '{$data}';
-//        dashboard_charts(data) ;
-//        });
-//JavaScript;
-//Yii::app()->getClientScript()->registerScript('id',$script);
+<!--
+<div class="row-fluid">
+    <br/>
+</div>
+<div class="row-fluid">
+          <div class="span4 block">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <div class="row-fluid">
+                  <div class="span6">
+                      <h4>User Routes</h4>
+                    <i class="fa fa-users fa-5x"></i>
+                  </div>
+                  <div class="span6 text-right">
+                    
+                    <p class="announcement-text">User`s Alerts</p>
+                    <p >
+                    <a class="btn btn-primary block-action" href="<?php  echo $this->createUrl('//dashboard/userRoutes')  ?>"> View User Alerts</a>
+                </p>
+                  </div>
+                </div>
+              </div>
+           
+            </div>
+          </div>
+          <div class="span4 block">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <div class="row-fluid">
+                  <div class="span6">
+                      <h4>Users</h4>
+                    <i class="fa fa-group fa-5x"></i>
+                  </div>
+                  <div class="span6 text-right">
+                    <p class="announcement-heading"><?php  echo $result['user_count'] ?></p>
+                    <p class="announcement-text">Active Users</p>
+                      <p >
+                    <a class="btn btn-primary block-action" href="<?php  echo $this->createUrl('//dashboard/routeData')  ?>"> Manage Users</a>
+                </p>
+                  </div>
+                </div>
+              </div>
+          
+            </div>
+          </div>
+          <div class="span4 block">
+            <div class="panel panel-danger">
+              <div class="panel-heading">
+                <div class="row-fluid">
+                  <div class="span6">
+                      <h4>Locations</h4>
+                    <i class="fa fa-flag fa-5x"></i>
+                  </div>
+                  <div class="span6 text-right">
+                    <p class="announcement-heading"><?php  echo $result['location_count'] ?></p>
+                    <p class="announcement-text">Active Locations</p>
+                      <p >
+                    <a class="btn btn-primary block-action" href="<?php  echo $this->createUrl('//location/admin')  ?>"> Manage Locations</a>
+                </p>
+                  </div>
+                </div>
+              </div>
+        
+            </div>
+          </div>
+         
+        </div>-->
