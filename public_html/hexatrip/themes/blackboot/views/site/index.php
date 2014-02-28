@@ -347,7 +347,7 @@ let us see how you plan your advance booking :</h4>
 							<li style="width: 100%; float: left; margin-right: -100%; position: relative; display: list-item;" class="flex-active-slide">
 								
 								<p style="line-height: 18px;font-size: 16px;">Whenever i booked ticket between Chennai and Hyderabad the waiting list queue moves very fast.I had to check the booking website 7 times a day to make sure i get the ticket.Thanks to hexatrip , i no longer need to do that and get all that alert in email.</p>
-								<span class="author"><strong>- Shreyas Chauhan</strong></span>
+								<span class="author"><img src="http://ibadmin.imagesbazaar.com/thumb/220-SM311173.jpg" style="width: 80%;height:80%;" /><br/><strong>- Shreyas Chauhan</strong></span> 
 							</li>
 						</ul>
 					</div>
