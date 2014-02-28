@@ -78,7 +78,7 @@
 ">Step3</h2>
   <h5 style="
     text-align: center;
-">Receive availble tickets lists in your mailbox</h5>
+">Receive available tickets lists in your mailbox</h5>
   <p style="
     text-align: center;
 "><i class="fa fa-envelope fa-3x base-color center" style="
@@ -271,8 +271,8 @@ $form=$this->beginWidget('CActiveForm', array(
 					<i class="fa fa-plane fa-5x base-color center" style="
     color: #ff8a00;
 "></i>
-					<h4>FLIGHT PRICES INCREASED ! AGAIN ?</h4>
-					<p>How many times you wanted to take a flight only to discover later that the prices have been doubled or even worse , there is no flight anymore ? Say no to these worries now with our easy to use flight status tracker.</p>
+					<h4>FLIGHT PRICES INCREASED ! NOT AGAIN ?</h4>
+					<p>How many times you wanted to take a flight only to discover later that the prices have gone up? Say no to these issues now with our easy to use flight price tracker.</p>
 				</div>	
 				<!-- Main Point 3 -->
 				
