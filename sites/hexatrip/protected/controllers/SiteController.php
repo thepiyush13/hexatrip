@@ -70,8 +70,18 @@ class SiteController extends Controller {
             return true;
         }
         
+        //check If location from and to are same
+          if ($_POST['Alert']['location_from'] == $_POST['Alert']['location_from']) {          
+           Yii::app()->user->setFlash('error', "From and to locations can`t be same!");   
         
+           $this->render('index',array(
+			'model'=>$model,
+		));
+            return true;
+        }
  
+        
+        
         
         
         //check if user exists in the system 

@@ -169,6 +169,7 @@ $form=$this->beginWidget('CActiveForm', array(
                         'options'=>array(
                         'showAnim'=>'fold',
                         'dateFormat'=>'dd-mm-yy',
+                            'minDate'=>'0',
                          ),
                  'htmlOptions'=>array(
                           'placeholder'=>'Select starting date',
@@ -190,6 +191,7 @@ $form=$this->beginWidget('CActiveForm', array(
                         'options'=>array(
                         'showAnim'=>'fold',
                         'dateFormat'=>'dd-mm-yy',
+                             'minDate'=>'0',
                             
                          ),
 	)); 
