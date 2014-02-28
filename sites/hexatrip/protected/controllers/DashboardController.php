@@ -231,7 +231,7 @@ class DashboardController extends Controller {
             //pass to send mail function
             $mail_data['model'] =$this->get_mail_html($temp);
 //            echo $this->render('/mail/alert_mail',array('model'=>$mail_data['model'] ));
-            
+//            die('d');
             //add to email queue
             $mail_data['email_to'] = $alert_email;    
             $mail_data['view_file'] = 'alert_mail';
@@ -289,23 +289,25 @@ class DashboardController extends Controller {
             $criteria->condition='location_from =  :location_from AND location_to = :location_to';
             $criteria->addCondition( 'date BETWEEN "'.$date_from.'" AND "'.$date_to.'"' );
             $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id);
-            $alert_train_data['matched']  = TempTrainStatus::model()->findAll($criteria); 
+            //$alert_train_data['matched']  = TempTrainStatus::model()->findAll($criteria); 
                 //finding future ticket macthing 
+            //creating train dashboard 
+            $sql = "SELECT *,SUM(available) as total_tickets ,
+                 count(*) as total_trains
+                    FROM temp_train_status 
+                WHERE location_from =  $from_id 
+                    AND location_to = $to_id 
+                    AND date BETWEEN  '$date_from' AND '$date_to'
+                GROUP BY date  order by total_tickets desc";
+             $alert_train_data['matched'] = Yii::app()->db->createCommand($sql)->queryAll();
             
-//            
-//            $list= Yii::app()->db->createCommand('select * from post')->queryAll();
-//             $criteria = new CDbCriteria;
-//             $criteria->select = 'SUM(available) as total_tickets ';
-//            $criteria->condition='location_from =  :location_from AND location_to = :location_to AND date > :date_to';
-//            $criteria->group = 'date';            
-//            $criteria->params  =   array(':location_from' => $from_id,':location_to' => $to_id,':date_to'=>$date_to);
-//            $x = new CActiveDataProvider('TempTrainStatus', array('criteria'=>$criteria));
-//             $alert_train_data['future']  = TempTrainStatus::model()->findAll($criteria);
             
-             $sql = "SELECT *,SUM(available) as total_tickets FROM temp_train_status 
+             $sql = "SELECT *,SUM(available) as total_tickets,
+                 count(*) as total_trains FROM temp_train_status 
                 WHERE location_from =  $from_id AND location_to = $to_id AND date > '$date_to'
-                GROUP BY date";
+                GROUP BY date order by total_tickets desc";
              $alert_train_data['future'] = Yii::app()->db->createCommand($sql)->queryAll();
+             
              $msg['train']= $this->create_train_table($alert_train_data);
             
             //find other information
@@ -331,56 +333,160 @@ class DashboardController extends Controller {
         
     }
     
+    /**
+     * @returns Created overview dashboard for train data 
+     */
     
     protected function create_train_table($data){       
 
         $data_matched = isset($data['matched']) ? $data['matched'] : FALSE;
         $data_future = isset($data['future']) ? $data['future'] : FALSE;
-        $result = '';
-        //if data is macthed - show main table 
-        if($data_matched){
-            $result.= '<h3>Total '.count($data_matched).' Train(s) found for your route</h3>';
-        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Day</th><th>Train Number</th><th>Train Name</th>
-            <th>Class</th><th>Available Seats</th><th>Action</th></tr>";
-foreach($data_matched as $k=>$vv){
-     
-    $result.="<tr>";
-     $result.="<td>".($k+1)."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $vv['date']) ."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format ("EEE", $vv['date']) ."</td>";
-        $result.="<td>".$vv['train_id']."</td>";
-        $result.="<td>".$vv['train_name']."</td>";
-        $result.="<td>".$vv['type']."</td>";
-        $result.="<td>Less than ".(ceil($vv['available'] / 10) * 10)."</td>";
-        $result.="<td><a href='http://www.irctc.co.in'>Book now</a></td>";
-        
-    $result.="<tr>";
-}
-$result.="</table>";
-        }
-        //show future table also
-        if($data_future){
-            $total = 20;
-            $result.= '<h3>Next available tickets </h3>';
-        $result.= "<table border='1' cellpadding='4px'><tr><th>SNO.</th><th>Date</th><th>Day</th><th>Total Available Seats</th> <th>Action</th></tr>";
-foreach($data_future as $k=>$vv){
-     
-           
-    $result.="<tr>";
-     $result.="<td>".($k+1)."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $vv['date'])."</td>";
-        $result.="<td>".Yii::app()->dateFormatter->format ("EEE", $vv['date']) ."</td>";
-        $result.="<td>".$vv['total_tickets']."</td>";
-        $result.="<td><a href='http://www.irctc.co.in'>See details</a></td>";
+        //generating respective arrays for dashboard blocks
+        $avail_high = $avail_low = $avail_future = $open_tatkal = $open_future = array();
        
         
-    $result.="<tr>";
-    //only next 20 trains 
-    if($k>=$total){
+           
+        //if data is macthed - show main table 
+        //if availability is more then 50  = high available , less then 50 = low availble
+        if($data_matched){
+foreach($data_matched as $k=>$vv){
+     //if avail data is > 50 - put under most avail else less avail
+    if($vv['total_tickets']>50){
+        $avail_high[] = $vv;
+    }
+     
+    if($vv['total_tickets']<=50){
+        $avail_low[] = $vv;
+    }
+    //if train date is between today + 2 days so tatkal booking is on 
+            $today = date('Y-m-d');
+            $tatkal_max_date = date('Y-m-d', strtotime($today. ' + 2 days'));
+     if($vv['date']<=$tatkal_max_date && $vv['date']>$today){
+        $open_tatkal[] = $vv;
+    }
+        
+     //if train date is between today + 2 months so future booking is on
+            $future_max_date = date('Y-m-d', strtotime($today. ' + 60 days'));
+     if($vv['date']<=$future_max_date && $vv['date']>$today){
+        $open_future[] = $vv;
+}
+       
+        }
+     
+           
+    //now we have blocks array - generating blocks
+        $result = '';
+        $result.= '<h3>Total '.count($data_matched).' Train(s) found for your route</h3>';
+        $result.= "<table cellpadding='2px'><tbody>";
+       
+        //HIGH AVAIL  if the block array is set , generate the block row
+            if(isset($avail_high) && !empty($avail_high)){
+                $result.="<tr><td style='cell: 2px;background: rgb(171, 255, 171);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Most Available Days</td><td><ul><li><i>These trains have hight number of available tickets , book without any hurry</i></li>" ;
+                foreach ($avail_high as $key => $value) {                     
+                    $result.="<li><span style='font-size: 20px;'>".
+                            Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
+                            ."(".Yii::app()->dateFormatter->format ("EEE", $value['date']).")".
+                            "</span> : Less than <span style='font-size: 20px;'>".
+                            $value['total_tickets'].
+                            " Seats</span> available in <span style='font-size: 20px;'>".
+                            $value['total_trains'] .
+                            " Train(s)</span> </li>";
+                    $result.="</li>";
+        
+                }
+                
+                 $result.="</ul></td></tr>" ;
+                
+            }
+            
+        //LESS AVAIL if the block array is set , generate the block row
+            if(isset($avail_low) && !empty($avail_low)){
+                $result.="<tr><td style='cell: 2px;background: rgba(211, 5, 5, 0.37);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Less Available Days</td><td><ul><li><i>These trains have less number of available tickets , book quickly to avoid loosing tickets</i></li>" ;
+                foreach ($avail_low as $key => $value) {                     
+                    $result.="<li><span style='font-size: 20px;'>".
+                            Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
+                              ."(".Yii::app()->dateFormatter->format ("EEE", $value['date']).")".
+                            Yii::app()->dateFormatter->format ("EEE", $value['date']).
+                            "</span> : Less than <span style='font-size: 20px;'>".
+                            $value['total_tickets']. 
+                            " Seats</span> available in <span style='font-size: 20px;'>".
+                            $value['total_trains'] .
+                            " Train(s)</span> </li>";
+                    $result.="</li>";
+                    
+                }
+                
+                 $result.="</ul></td></tr>" ;
+                
+            }
+            
+            //TATKAAL if the block array is set , generate the block row
+            if(isset($open_tatkal) && !empty($open_tatkal)){
+                $result.="<tr><td style='cell: 2px;background: rgba(35, 204, 96, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Tatkal booking started</td><td><ul><li><i>These train`s Tatkal booking has  been opened  , book quickly to avoid loosing tickets</i></li>" ;
+                foreach ($open_tatkal as $key => $value) {                     
+                    $result.="<li>On <span style='font-size: 20px;'>".
+                            Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
+                              ."(".Yii::app()->dateFormatter->format ("EEE", $value['date']).")".
+                            Yii::app()->dateFormatter->format ("EEE", $value['date']).
+                            "</span>  <span style='font-size: 20px;'> TATKAL Booking has started".
+                            " </span> For <span style='font-size: 20px;'>".
+                            $value['total_trains'] .
+                            " Train(s)</span> </li>";
+                    $result.="</li>";
+                    
+                }
+                
+                 $result.="</ul></td></tr>" ;
+                
+            }
+            
+             //FUTURE if the block array is set , generate the block row
+            if(isset($open_future) && !empty($open_future)){
+                $result.="<tr><td style='cell: 2px;background:rgba(111, 113, 145, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future booking started</td><td><ul><li><i>These trains have just been opened for booking , book quickly to avoid loosing tickets</i></li>" ;
+                foreach ($open_future as $key => $value) {                     
+                    $result.="<li>On <span style='font-size: 20px;'>".
+                            Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
+                              ."(".Yii::app()->dateFormatter->format ("EEE", $value['date']).")".
+                            "</span>  <span style='font-size: 20px;'> Future Booking has started".
+                            " </span> For <span style='font-size: 20px;'>".
+                            $value['total_trains'] .
+                            " Train(s)</span> </li>";
+                    $result.="</li>";
+                    
+                }
+                
+                 $result.="</ul></td></tr>" ;
+                
+            }
+       
+        }
+        
+       
+      
+        //show future table also
+        if($data_future){
+            $total = 10;            
+            $result.="<tr><td style='cell: 2px;background: rgba(204, 204, 35, 0.56);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future Available Days</td><td><ul><li><i>These are future available tickets for your route</i></li>" ;
+                foreach ($data_future as $key => $value) {                     
+                    $result.="<li><span style='font-size: 20px;'>".
+                            Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
+                            ."(".Yii::app()->dateFormatter->format ("EEE", $value['date']).")".
+                            "</span> : Less than <span style='font-size: 20px;'>".
+                            $value['total_tickets'].
+                            " Seats</span> available in <span style='font-size: 20px;'>".
+                            $value['total_trains'] .
+                            " Train(s)</span> </li>";
+                    $result.="</li>";
+                     if($key>=$total){
         break;
     }
+                    
 }
+                
+                 $result.="</ul></td></tr>" ;
 $result.="</table>";
+        
+
         }
         
         

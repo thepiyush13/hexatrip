@@ -19,7 +19,7 @@ var routes = new Array();
 routes = get_routes();
 
 //loop through the routes
-for (var i = 1; i < routes.length; i++) {  //i=1 to omit header of table
+for (var i = 1; i <=routes.length; i++) {  //i=1 to omit header of table
     var route = routes[i];
     //find trains page for each  route      
     find_trains(route);
@@ -32,8 +32,8 @@ for (var i = 1; i < routes.length; i++) {  //i=1 to omit header of table
             var train_data = get_train_data(start_from,train,route);
              find_trains(route);
            // save_to_db(train_data, FILE_NAME);
-             iimDisplay('currently on route no:' +i+' - Train no :' +j);
-             humanize('medium');
+             iimDisplay('Finished  route no:' +i+' - Train no :' +j);
+             //humanize('medium');
           
         }
         //emulate user behaviour - after train 
@@ -45,6 +45,8 @@ for (var i = 1; i < routes.length; i++) {  //i=1 to omit header of table
     
  
 }
+//complete
+iimDisplay('Finished  Extracting data , file at ' +FILE_NAME);
 
 /*************---------------------------------- FUNCTION LIST -------------------------------------------------------------********/
 
@@ -154,7 +156,7 @@ function get_train_list() {
 function get_train_data(start_from,train,route) {
     var count = start_from;  // train^th row in table is the data row
     var base_xpath = '/html/body/table/tbody/tr/td/table/tbody/tr[1]/td/table/tbody/tr[3]/td/table/tbody/tr/td/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td[1]/table/tbody/tr/td/table[1]/tbody/tr[6]/td/table[2]';  //xpath selector for main train table
-    iimDisplay("Getting  Train Data");
+      iimDisplay('currently on route:' +route+' - Train  :' +train);
     var xpath_radio = base_xpath + '/tbody/tr[' + count + ']/td[1]/input';
     var xpath_input = '/html/body/table/tbody/tr/td/table/tbody/tr[1]/td/table/tbody/tr[3]/td/table/tbody/tr/td/table/tbody/tr/td[2]/table/tbody/tr[2]/td/table/tbody/tr[2]/td[2]/table/tbody/tr[2]/td[1]/table/tbody/tr/td/table[1]/tbody/tr[6]/td/table[1]/tbody/tr[4]/td/input[1]';
     iimSet("XPATH_RADIO", xpath_radio);
@@ -169,7 +171,7 @@ function get_train_data(start_from,train,route) {
         return false;
     }
     //train availibility page is displayed - extract next 2 months data 
-    humanize('basic');
+    //humanize('basic');
     get_train_avail_data_new(train,route);
 //    alert(train_avail_data.length)
     
