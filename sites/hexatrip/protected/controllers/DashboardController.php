@@ -68,7 +68,6 @@ class DashboardController extends Controller {
         $sql = "select COUNT(*)  from alert
   where alert.status= 1  and 
   location_from<>location_to 
-  and date_from > now()
   and date_to > now()
   and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
   group by location_from,location_to";
@@ -123,7 +122,6 @@ class DashboardController extends Controller {
         $sql = "select * from alert
   where alert.status= 1  and 
   location_from<>location_to 
-  and date_from > now()
   and date_to > now()
   and date_to < date_add(NOW(),INTERVAL 2 MONTH) 
   group by location_from,location_to";
@@ -381,7 +379,7 @@ foreach($data_matched as $k=>$vv){
        
         //HIGH AVAIL  if the block array is set , generate the block row
             if(isset($avail_high) && !empty($avail_high)){
-                $result.="<tr><td style='cell: 2px;background: rgb(171, 255, 171);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Most Available Days</td><td><ul><li><i>These trains have hight number of available tickets , book without any hurry</i></li>" ;
+                $result.="<tr><td style='border: 1px solid rgb(171, 255, 171);border-bottom:none;'><ol><p style='cell: 2px;background: rgb(171, 255, 171);font-size: 18px;text-align:center;'>Most Available Days</p><p><i>These trains have hight number of available tickets , book without any hurry</i></p>" ;
                 foreach ($avail_high as $key => $value) {                     
                     $result.="<li><span style='font-size: 20px;'>".
                             Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
@@ -395,13 +393,14 @@ foreach($data_matched as $k=>$vv){
         
                 }
                 
-                 $result.="</ul></td></tr>" ;
+                 $result.="</ol></td></tr>" ;
                 
             }
             
         //LESS AVAIL if the block array is set , generate the block row
             if(isset($avail_low) && !empty($avail_low)){
-                $result.="<tr><td style='cell: 2px;background: rgba(211, 5, 5, 0.37);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Less Available Days</td><td><ul><li><i>These trains have less number of available tickets , book quickly to avoid loosing tickets</i></li>" ;
+//                $result.="<tr><td style='cell: 2px;background: rgba(211, 5, 5, 0.37);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Less Available Days</td><td><ul><li><i>These trains have less number of available tickets , book quickly to avoid loosing tickets</i></li>" ;
+                 $result.="<tr><td style='border: 1px solid rgba(211, 5, 5, 0.37);border-bottom:none;'><ol><p style='cell: 2px;background: rgba(211, 5, 5, 0.37);font-size: 18px;text-align:center;'>Less Available Days</p><p><i>These trains have less number of available tickets , book quickly to avoid loosing tickets</i></p>" ;
                 foreach ($avail_low as $key => $value) {                     
                     $result.="<li><span style='font-size: 20px;'>".
                             Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
@@ -416,13 +415,14 @@ foreach($data_matched as $k=>$vv){
                     
                 }
                 
-                 $result.="</ul></td></tr>" ;
+                 $result.="</ol></td></tr>" ;
                 
             }
             
             //TATKAAL if the block array is set , generate the block row
             if(isset($open_tatkal) && !empty($open_tatkal)){
-                $result.="<tr><td style='cell: 2px;background: rgba(35, 204, 96, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Tatkal booking started</td><td><ul><li><i>These train`s Tatkal booking has  been opened  , book quickly to avoid loosing tickets</i></li>" ;
+//                $result.="<tr><td style='cell: 2px;background: rgba(35, 204, 96, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Tatkal booking started</td><td><ul><li><i>These train`s Tatkal booking has  been opened  , book quickly to avoid loosing tickets</i></li>" ;
+              $result.="<tr><td style='border: 1px solid rgba(35, 204, 96, 0.21);border-bottom:none;'><ol><p style='cell: 2px;background: rgba(35, 204, 96, 0.21);font-size: 18px;text-align:center;'>Tatkal booking started</p><p><i>These train`s Tatkal booking has  been opened  , book quickly to avoid loosing tickets</i></p>" ;
                 foreach ($open_tatkal as $key => $value) {                     
                     $result.="<li>On <span style='font-size: 20px;'>".
                             Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
@@ -436,13 +436,14 @@ foreach($data_matched as $k=>$vv){
                     
                 }
                 
-                 $result.="</ul></td></tr>" ;
+                 $result.="</ol></td></tr>" ;
                 
             }
             
              //FUTURE if the block array is set , generate the block row
             if(isset($open_future) && !empty($open_future)){
-                $result.="<tr><td style='cell: 2px;background:rgba(111, 113, 145, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future booking started</td><td><ul><li><i>These trains have just been opened for booking , book quickly to avoid loosing tickets</i></li>" ;
+//                $result.="<tr><td style='cell: 2px;background:rgba(111, 113, 145, 0.21);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future booking started</td><td><ul><li><i>These trains have just been opened for booking , book quickly to avoid loosing tickets</i></li>" ;
+                 $result.="<tr><td style='border: 1px solid rgba(111, 113, 145, 0.21);border-bottom:none;'><ol><p style='cell: 2px;background:rgba(111, 113, 145, 0.21);font-size: 18px;text-align:center;'>Future booking started</p><p><i>These trains have just been opened for booking , book quickly to avoid loosing tickets</i></p>" ;
                 foreach ($open_future as $key => $value) {                     
                     $result.="<li>On <span style='font-size: 20px;'>".
                             Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
@@ -455,7 +456,7 @@ foreach($data_matched as $k=>$vv){
                     
                 }
                 
-                 $result.="</ul></td></tr>" ;
+                 $result.="</ol></td></tr>" ;
                 
             }
        
@@ -466,7 +467,8 @@ foreach($data_matched as $k=>$vv){
         //show future table also
         if($data_future){
             $total = 10;            
-            $result.="<tr><td style='cell: 2px;background: rgba(204, 204, 35, 0.56);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future Available Days</td><td><ul><li><i>These are future available tickets for your route</i></li>" ;
+//            $result.="<tr><td style='cell: 2px;background: rgba(204, 204, 35, 0.56);font-size: 18px;word-break: break-word;text-align:center;width: 20%;'>Future Available Days</td><td><ul><li><i>These are future available tickets for your route</i></li>" ;
+              $result.="<tr><td style='border: 1px solid  rgba(204, 204, 35, 0.56);border-bottom:none;'><ol><p style='cell: 2px;background: rgba(204, 204, 35, 0.56);font-size: 18px;text-align:center;'>Future Available Days</p><p><i>These are future available tickets for your route</i></p>" ;
                 foreach ($data_future as $key => $value) {                     
                     $result.="<li><span style='font-size: 20px;'>".
                             Yii::app()->dateFormatter->format(" dd-MMM-yyyy", $value['date'])
@@ -483,7 +485,7 @@ foreach($data_matched as $k=>$vv){
                     
 }
                 
-                 $result.="</ul></td></tr>" ;
+                 $result.="</ol></td></tr>" ;
 $result.="</table>";
         
 
