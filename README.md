@@ -1,6 +1,6 @@
 # README #
 
-HexaTrip.com is an online platform to make your next trip easy and fun.
+# HexaTrip.com is an online platform to make your next trip easy and fun. #
 
 ### What is this repository for? ###
 
@@ -21,4 +21,4 @@ HexaTrip.com is an online platform to make your next trip easy and fun.
 
 ### Who do I talk to? ###
 
-*Piyush Tripathi
+* Piyush Tripathi
