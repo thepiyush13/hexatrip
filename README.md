@@ -5,7 +5,7 @@
 ### What is this repository for? ###
 
 * Who we are?  HexaTrip.com is an online platform to make your next trip easy and fun.
-*What we do?   HexaTrip.com Provides service called "HexaAlert".This alert service can help you find better flight, bus or train tickets.You specify the type of ticket you want and the service sends you useful email alerts when it finds tickets that match your criteria.
+* What we do?   HexaTrip.com Provides service called "HexaAlert".This alert service can help you find better flight, bus or train tickets.You specify the type of ticket you want and the service sends you useful email alerts when it finds tickets that match your criteria.
 * v1.9
 
 
