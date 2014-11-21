@@ -1,32 +1,24 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+HexaTrip.com is an online platform to make your next trip easy and fun.
 
 ### What is this repository for? ###
 
-* <h3>Who we are?</h3>
-	  <p>HexaTrip.com is an online platform to make your next trip easy and fun. </p>
-          <h3>What we do?</h3>
-	  <p>HexaTrip.com Provides service called "HexaAlert".This alert service can help you find better flight, bus or train tickets.You specify the type of ticket you want and the service sends you useful email alerts when it finds tickets that match your criteria. </p>
+* Who we are?  HexaTrip.com is an online platform to make your next trip easy and fun.
+*What we do?   HexaTrip.com Provides service called "HexaAlert".This alert service can help you find better flight, bus or train tickets.You specify the type of ticket you want and the service sends you useful email alerts when it finds tickets that match your criteria.
 * v1.9
 
 
 ### How do set it up? ###
 
 * Summary of set up : Copy files to webroot , setup mysql with required login details
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Configuration : Database configuration , Apache server configuration required
+* Dependencies : Yii Framework , Jquery , Bootstrap
+* Database configuration : Mysql 5.0
+* How to run tests : Unit tests
+* Deployment instructions : deploy on main domain , not on subdomain , create SMTP before deployment
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+*Piyush Tripathi
